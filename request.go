@@ -32,6 +32,8 @@ type Param struct {
 
 type ICustomHTTP interface {
 	DoWithAutoProxy(param Param) (customResponse, error)
+	DoWithProxy(param Param) (customResponse, error)
+	Do(param Param) (customResponse, error)
 }
 
 type customHTTP struct {
@@ -104,7 +106,7 @@ func (c *customHTTP) do(param Param, autoClient, noProxy bool) (customResponse, 
 		client = c.clientAutoProxy
 	} else if noProxy {
 		client = c.client
-	}else{
+	} else {
 		client = c.clientProxy
 	}
 
