@@ -1,4 +1,4 @@
-package hplib
+package steam_helper
 
 import (
 	"bytes"
