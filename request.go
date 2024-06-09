@@ -31,16 +31,18 @@ type Param struct {
 }
 
 type ICustomHTTP interface {
-	Do(param Param) (customResponse, error)
+	DoWithAutoProxy(param Param) (customResponse, error)
 }
 
 type customHTTP struct {
-	client        *http.Client
-	proxyUrl      []*url.URL
-	mu            *sync.Mutex
-	indexProxy    int // индекс прокси
-	proxyReqCount int // счетчик запросов с прокси
-	maxProxyReq   int // максимальное количество запросов с прокси перед сменой на новое прокси
+	clientAutoProxy *http.Client
+	clientProxy     *http.Client
+	client          *http.Client
+	proxyUrl        map[string]*url.URL
+	staticProxy     *url.URL
+	mu              *sync.Mutex
+	proxyReqCount   int // счетчик запросов с прокси
+	maxProxyReq     int // максимальное количество запросов с прокси перед сменой на новое прокси
 }
 
 type customResponse struct {
@@ -55,24 +57,55 @@ func NewHttp(client *http.Client, proxy []ProxyConfig) ICustomHTTP {
 	c.client = client
 	c.mu = &sync.Mutex{}
 
-	for _, value := range proxy {
+	if len(proxy) > 0 {
+		c.clientAutoProxy = client
+		c.clientProxy = client
 
-		url, err := url.Parse(fmt.Sprintf("http://%s:%s@%s:%s", value.Login, value.Pass, value.IP, value.Port))
-		if err != nil {
-			panic(err)
+		for _, value := range proxy {
+
+			url, err := url.Parse(fmt.Sprintf("http://%s:%s@%s:%s", value.Login, value.Pass, value.IP, value.Port))
+			if err != nil {
+				panic(err)
+			}
+
+			c.proxyUrl[value.IP] = url
 		}
-
-		c.proxyUrl = append(c.proxyUrl, url)
 	}
 
 	return &c
 }
 
-func (c *customHTTP) Do(param Param) (customResponse, error) {
-	var resp customResponse
-
+// Выполнение запроса с автоматическим выбором прокси
+func (c *customHTTP) DoWithAutoProxy(param Param) (customResponse, error) {
 	if c.maxProxyReq == c.proxyReqCount {
-		c.updateProxy()
+		c.updateAutoProxy()
+	}
+
+	c.proxyReqCount++
+
+	return c.do(param, true, false)
+}
+
+// Выполнение запроса без автоматического выбора прокси
+func (c *customHTTP) DoWithProxy(param Param) (customResponse, error) {
+	return c.do(param, false, false)
+}
+
+// Выполнение запроса без прокси
+func (c *customHTTP) Do(param Param) (customResponse, error) {
+	return c.do(param, false, true)
+}
+
+func (c *customHTTP) do(param Param, autoClient, noProxy bool) (customResponse, error) {
+	var resp customResponse
+	var client *http.Client
+
+	if autoClient {
+		client = c.clientAutoProxy
+	} else if noProxy {
+		client = c.client
+	}else{
+		client = c.clientProxy
 	}
 
 	req, err := http.NewRequest(param.Method, param.Url, bytes.NewBuffer(param.Body))
@@ -84,12 +117,11 @@ func (c *customHTTP) Do(param Param) (customResponse, error) {
 		req.Header.Add(key, value)
 	}
 
-	response, err := c.client.Do(req)
+	response, err := client.Do(req)
 	if err != nil {
 		return resp, Trace(err)
 	}
 	defer response.Body.Close()
-	c.proxyReqCount++
 
 	for key, values := range response.Header {
 		resp.Headers[key] = strings.Join(values, ", ")
@@ -106,21 +138,31 @@ func (c *customHTTP) Do(param Param) (customResponse, error) {
 	return resp, nil
 }
 
-func (c *customHTTP) updateProxy() {
+func (c *customHTTP) UpdateProxy(url *url.URL) {
+	c.mu.Lock()
+	c.staticProxy = url
+	c.mu.Unlock()
+}
+
+func (c *customHTTP) updateAutoProxy() {
 	if len(c.proxyUrl) == 0 {
 		return
 	}
 
 	c.mu.Lock()
 
-	c.indexProxy++
 	c.maxProxyReq = rand.Intn(30-10+1) + 10
 	c.proxyReqCount = 0
 
+	var keys []string
+	for k := range c.proxyUrl {
+		keys = append(keys, k)
+	}
+
 	if c.client.Transport == nil {
-		c.client.Transport = &http.Transport{Proxy: http.ProxyURL(c.proxyUrl[c.indexProxy])}
+		c.client.Transport = &http.Transport{Proxy: http.ProxyURL(c.proxyUrl[keys[rand.Intn(len(keys))]])}
 	} else {
-		c.client.Transport.(*http.Transport).Proxy = http.ProxyURL(c.proxyUrl[c.indexProxy])
+		c.client.Transport.(*http.Transport).Proxy = http.ProxyURL(c.proxyUrl[keys[rand.Intn(len(keys))]])
 	}
 
 	c.mu.Unlock()
