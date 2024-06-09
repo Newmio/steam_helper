@@ -23,6 +23,7 @@ type Param struct {
 	Url             string
 	Body            []byte
 	Headers         map[string]string
+	Cookies         []*http.Cookie
 	ResetRequest    bool
 	SecondsForReset int
 	CreateAllLog    bool
@@ -46,6 +47,7 @@ type customResponse struct {
 	StatusCode int
 	Body       []byte
 	Headers    map[string]string
+	Cookies   []*http.Cookie
 }
 
 func NewHttp(client *http.Client, proxy []ProxyConfig) ICustomHTTP {
@@ -99,6 +101,7 @@ func (c *customHTTP) Do(param Param) (customResponse, error) {
 	}
 	resp.Body = body
 	resp.StatusCode = response.StatusCode
+	resp.Cookies = response.Cookies()
 
 	return resp, nil
 }
