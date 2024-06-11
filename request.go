@@ -171,10 +171,12 @@ func (c *customHTTP) updateAutoProxy() {
 }
 
 func GetRandomUserAgent() string {
-	return userAgents[rand.Intn(len(userAgents))]
+	resp := pcUserAgents
+	resp = append(resp, mobileUserAgents...)
+	return resp[rand.Intn(len(resp))]
 }
 
-var userAgents = []string{
+var pcUserAgents = []string{
 	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.93 Safari/537.36",
 	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15",
 	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -268,6 +270,9 @@ var userAgents = []string{
 	"Opera/9.80 (X11; Linux x86_64; U; en) Presto/2.6.30 Version/10.54",
 	"Opera/9.80 (Macintosh; Intel Mac OS X 10_5_8) Presto/2.6.30 Version/10.54",
 	"Opera/9.80 (Windows NT 5.1; U; en) Presto/2.6.30 Version/10.53",
+}
+
+var mobileUserAgents = []string{
 	"Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36",
 	"Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1",
 	"Mozilla/5.0 (Linux; Android 9; Pixel 3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.93 Mobile Safari/537.36",

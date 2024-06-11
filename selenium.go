@@ -63,3 +63,35 @@ func MoveMouse(wd selenium.WebDriver, startX, startY, endX, endY int) error {
 
 	return nil
 }
+
+func GetRandomWindowSize(userAgent string) ScreenSize {
+	for _, value := range pcUserAgents {
+		if value == userAgent {
+			return computerScreenSizes[rand.Intn(len(computerScreenSizes))]
+		}
+	}
+
+	return mobileAndTabletScreenSizes[rand.Intn(len(mobileAndTabletScreenSizes))]
+}
+
+type ScreenSize struct {
+	Width  int
+	Height int
+}
+
+var computerScreenSizes = []ScreenSize{
+	{1920, 1080}, {1366, 768}, {1440, 900}, {1536, 864},
+	{1600, 900}, {1680, 1050}, {2560, 1440}, {3840, 2160},
+	{1280, 1024}, {1600, 1200}, {1920, 1200}, {2560, 1600},
+	{3440, 1440}, {5120, 2880}, {2048, 1080}, {2880, 1800},
+	{3200, 1800}, {2736, 1824}, {3000, 2000}, {3840, 1600},
+	{4096, 2160}, {1080, 1920}, {1440, 2560}, {2160, 3840},
+	{2400, 1350}, {3072, 1920}, {1600, 2560}, {1200, 1920},
+}
+
+var mobileAndTabletScreenSizes = []ScreenSize{
+	{320, 480}, {360, 640}, {375, 667}, {375, 812},
+	{414, 896}, {768, 1024}, {800, 1280}, {1024, 1366},
+	{600, 1024}, {800, 1280}, {720, 1280}, {1080, 1920},
+	{1440, 2560}, {2160, 3840}, {480, 800}, {540, 960},
+}
