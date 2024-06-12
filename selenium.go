@@ -17,10 +17,10 @@ func MoveMouse(wd selenium.WebDriver, startX, startY, endX, endY int) error {
 	delay := 2 * time.Millisecond
 
 	// Генерация случайных контрольных точек для кривой Безье
-	cp1XOffset := rand.Intn(601) - 150
-	cp1YOffset := rand.Intn(601) - 150
-	cp2XOffset := rand.Intn(601) - 150
-	cp2YOffset := rand.Intn(601) - 150
+	cp1XOffset := rand.Intn(401) - 150
+	cp1YOffset := rand.Intn(401) - 150
+	cp2XOffset := rand.Intn(401) - 150
+	cp2YOffset := rand.Intn(401) - 150
 
 	cp1X := startX + cp1XOffset
 	cp1Y := startY + cp1YOffset
