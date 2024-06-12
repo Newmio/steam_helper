@@ -69,9 +69,7 @@ func SleepRandom(min int, max int) {
 		min, max = max, min
 	}
 
-	duration := time.Duration(rand.Intn(max-min+1)+min) * time.Millisecond
-	
-	time.Sleep(duration)
+	time.Sleep(time.Duration(rand.Intn(max-min+1)+min) * time.Millisecond)
 }
 
 // func convertToHTTPCookies(seleniumCookies []*selenium.Cookie) []*http.Cookie {
