@@ -72,6 +72,93 @@ func SleepRandom(min int, max int) {
 	time.Sleep(time.Duration(rand.Intn(max-min+1)+min) * time.Millisecond)
 }
 
+type Position struct {
+	X int
+	Y int
+}
+
+func MoveMouseAndWriteText(wb selenium.WebDriver, nameCssSelector, text string, startPosition Position) (Position, error) {
+	element, err := wb.FindElement(selenium.ByCSSSelector, nameCssSelector)
+	if err != nil {
+		return Position{}, err
+	}
+
+	end, err := GetPositionElement(element)
+	if err != nil {
+		return Position{}, err
+	}
+
+	if err := MoveMouse(wb, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
+		return Position{}, err
+	}
+
+	SleepRandom(100, 500)
+
+	if err := element.Click(); err != nil {
+		return Position{}, err
+	}
+
+	for _, value := range text {
+		if err := element.SendKeys(string(value)); err != nil {
+			return Position{}, err
+		}
+
+		SleepRandom(50, 150)
+	}
+
+	return end, nil
+}
+
+func MoveMouseAndClick(wb selenium.WebDriver, nameCssSelector string) (Position, error) {
+	element, err := wb.FindElement(selenium.ByCSSSelector, nameCssSelector)
+	if err != nil {
+		return Position{}, err
+	}
+
+	start, err := GetRandomStartMousePosition(wb)
+	if err != nil {
+		return Position{}, err
+	}
+
+	end, err := GetPositionElement(element)
+	if err != nil {
+		return Position{}, err
+	}
+
+	return end, MoveMouse(wb, start.X, start.Y, end.X, end.Y)
+}
+
+func GetRandomStartMousePosition(wb selenium.WebDriver) (Position, error) {
+	window, err := wb.ExecuteScript("return [window.innerWidth, window.innerHeight];", nil)
+	if err != nil {
+		return Position{}, err
+	}
+
+	windowSize := window.([]interface{})
+
+	return Position{
+		X: int(windowSize[0].(float64)),
+		Y: int(windowSize[1].(float64)),
+	}, nil
+}
+
+func GetPositionElement(element selenium.WebElement) (Position, error) {
+	location, err := element.Location()
+	if err != nil {
+		return Position{}, err
+	}
+
+	size, err := element.Size()
+	if err != nil {
+		return Position{}, err
+	}
+
+	return Position{
+		X: location.X + rand.Intn(int(size.Width)),
+		Y: location.Y + rand.Intn(int(size.Height)),
+	}, nil
+}
+
 // func convertToHTTPCookies(seleniumCookies []*selenium.Cookie) []*http.Cookie {
 // 	var httpCookies []*http.Cookie
 // 	for _, sc := range seleniumCookies {
