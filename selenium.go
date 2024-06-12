@@ -64,6 +64,39 @@ func MoveMouse(wd selenium.WebDriver, startX, startY, endX, endY int) error {
 	return nil
 }
 
+func SleepRandom(min int, max int) {
+	if min > max {
+		min, max = max, min
+	}
+
+	duration := time.Duration(rand.Intn(max-min+1)+min) * time.Millisecond
+	
+	time.Sleep(duration)
+}
+
+// func convertToHTTPCookies(seleniumCookies []*selenium.Cookie) []*http.Cookie {
+// 	var httpCookies []*http.Cookie
+// 	for _, sc := range seleniumCookies {
+
+// 		var expires time.Time
+//         if sc.Expiry != 0 {
+//             expires = time.Unix(int64(sc.Expiry), 0)
+//         }
+
+// 		hc := &http.Cookie{
+// 			Name:     sc.Name,
+// 			Value:    sc.Value,
+// 			Domain:   sc.Domain,
+// 			Path:     sc.Path,
+// 			Expires:  expires,
+// 			Secure:   sc.Secure,
+// 			HttpOnly: sc.HTTPOnly,
+// 		}
+// 		httpCookies = append(httpCookies, hc)
+// 	}
+// 	return httpCookies
+// }
+
 func GetRandomWindowSize(userAgent string) ScreenSize {
 	for _, value := range pcUserAgents {
 		if value == userAgent {
