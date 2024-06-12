@@ -8,11 +8,41 @@ import (
 	"github.com/tebeka/selenium"
 )
 
-func bezierCurve(t float64, p0, p1, p2, p3 float64) float64 {
+func bezierCurve(t, p0, p1, p2, p3 float64) float64 {
 	return (1-t)*(1-t)*(1-t)*p0 + 3*(1-t)*(1-t)*t*p1 + 3*(1-t)*t*t*p2 + t*t*t*p3
 }
 
-func MoveMouse(wd selenium.WebDriver, startX, startY, endX, endY int) error {
+func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) error {
+	steps := 100 // Количество шагов для перемещения
+	delay := 2 * time.Millisecond
+
+	// Генерация случайных контрольных точек для кривой Безье
+	cp1XOffset := rand.Intn(401) - 150
+	cp1YOffset := rand.Intn(401) - 150
+	cp2XOffset := rand.Intn(401) - 150
+	cp2YOffset := rand.Intn(401) - 150
+
+	cp1X := startX + cp1XOffset
+	cp1Y := startY + cp1YOffset
+	cp2X := endX + cp2XOffset
+	cp2Y := endY + cp2YOffset
+
+	for i := 0; i <= steps; i++ {
+		t := float64(i) / float64(steps)
+		x := bezierCurve(t, float64(startX), float64(cp1X), float64(cp2X), float64(endX))
+		y := bezierCurve(t, float64(startY), float64(cp1Y), float64(cp2Y), float64(endY))
+
+		if err := element.MoveTo(int(x), int(y)); err != nil {
+			return err
+		}
+
+		time.Sleep(delay + time.Duration(rand.Intn(5))*time.Millisecond)
+	}
+
+	return nil
+}
+
+func MarkerMoveMouse(wd selenium.WebDriver, startX, startY, endX, endY int) error {
 	steps := 100 // Количество шагов для перемещения
 	delay := 2 * time.Millisecond
 
@@ -77,18 +107,13 @@ type Position struct {
 	Y int
 }
 
-func MoveMouseAndWriteText(wb selenium.WebDriver, nameCssSelector, text string, startPosition Position) (Position, error) {
-	element, err := wb.FindElement(selenium.ByCSSSelector, nameCssSelector)
-	if err != nil {
-		return Position{}, err
-	}
-
+func MoveMouseAndWriteText(element selenium.WebElement, startPosition Position, text string) (Position, error) {
 	end, err := GetPositionElement(element)
 	if err != nil {
 		return Position{}, err
 	}
 
-	if err := MoveMouse(wb, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
+	if err := MoveMouse(element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
 		return Position{}, err
 	}
 
@@ -103,29 +128,19 @@ func MoveMouseAndWriteText(wb selenium.WebDriver, nameCssSelector, text string, 
 			return Position{}, err
 		}
 
-		SleepRandom(50, 150)
+		SleepRandom(100, 250)
 	}
 
 	return end, nil
 }
 
-func MoveMouseAndClick(wb selenium.WebDriver, nameCssSelector string) (Position, error) {
-	element, err := wb.FindElement(selenium.ByCSSSelector, nameCssSelector)
-	if err != nil {
-		return Position{}, err
-	}
-
-	start, err := GetRandomStartMousePosition(wb)
-	if err != nil {
-		return Position{}, err
-	}
-
+func MoveMouseAndClick(element selenium.WebElement, startPosition Position) (Position, error) {
 	end, err := GetPositionElement(element)
 	if err != nil {
 		return Position{}, err
 	}
 
-	return end, MoveMouse(wb, start.X, start.Y, end.X, end.Y)
+	return end, MoveMouse(element, startPosition.X, startPosition.Y, end.X, end.Y)
 }
 
 func GetRandomStartMousePosition(wb selenium.WebDriver) (Position, error) {
