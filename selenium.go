@@ -151,8 +151,8 @@ func MoveMouseAndClick(element selenium.WebElement, startPosition Position) (Pos
 	return end, nil
 }
 
-func GetRandomStartMousePosition(wb selenium.WebDriver) (Position, error) {
-	window, err := wb.ExecuteScript("return [window.innerWidth, window.innerHeight];", nil)
+func GetRandomStartMousePosition(wd selenium.WebDriver) (Position, error) {
+	window, err := wd.ExecuteScript("return [window.innerWidth, window.innerHeight];", nil)
 	if err != nil {
 		return Position{}, err
 	}
