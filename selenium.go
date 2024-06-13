@@ -140,7 +140,15 @@ func MoveMouseAndClick(element selenium.WebElement, startPosition Position) (Pos
 		return Position{}, err
 	}
 
-	return end, MoveMouse(element, startPosition.X, startPosition.Y, end.X, end.Y)
+	if err := MoveMouse(element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil{
+		return Position{}, err
+	}
+
+	if err := element.Click(); err != nil {
+		return Position{}, err
+	}
+
+	return end, nil
 }
 
 func GetRandomStartMousePosition(wb selenium.WebDriver) (Position, error) {
