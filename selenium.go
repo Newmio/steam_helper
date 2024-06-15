@@ -8,6 +8,8 @@ import (
 	"github.com/tebeka/selenium"
 )
 
+var BuzierOffset int
+
 func bezierCurve(t, p0, p1, p2, p3 float64) float64 {
 	return (1-t)*(1-t)*(1-t)*p0 + 3*(1-t)*(1-t)*t*p1 + 3*(1-t)*t*t*p2 + t*t*t*p3
 }
@@ -17,10 +19,10 @@ func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) erro
 	delay := 2 * time.Millisecond
 
 	// Генерация случайных контрольных точек для кривой Безье
-	cp1XOffset := rand.Intn(301) - 150
-	cp1YOffset := rand.Intn(301) - 150
-	cp2XOffset := rand.Intn(301) - 150
-	cp2YOffset := rand.Intn(301) - 150
+	cp1XOffset := rand.Intn(BuzierOffset) - 150
+	cp1YOffset := rand.Intn(BuzierOffset) - 150
+	cp2XOffset := rand.Intn(BuzierOffset) - 150
+	cp2YOffset := rand.Intn(BuzierOffset) - 150
 
 	cp1X := startX + cp1XOffset
 	cp1Y := startY + cp1YOffset
@@ -47,10 +49,10 @@ func TestMoveMouse(wd selenium.WebDriver, element selenium.WebElement, startX, s
 	delay := 2 * time.Millisecond
 
 	// Генерация случайных контрольных точек для кривой Безье
-	cp1XOffset := rand.Intn(401) - 150
-	cp1YOffset := rand.Intn(401) - 150
-	cp2XOffset := rand.Intn(401) - 150
-	cp2YOffset := rand.Intn(401) - 150
+	cp1XOffset := rand.Intn(BuzierOffset) - 150
+	cp1YOffset := rand.Intn(BuzierOffset) - 150
+	cp2XOffset := rand.Intn(BuzierOffset) - 150
+	cp2YOffset := rand.Intn(BuzierOffset) - 150
 
 	cp1X := startX + cp1XOffset
 	cp1Y := startY + cp1YOffset
