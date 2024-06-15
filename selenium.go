@@ -7,7 +7,7 @@ import (
 
 	"github.com/tebeka/selenium"
 )
-
+//
 var BuzierOffset int
 var BuzierSteps int
 
