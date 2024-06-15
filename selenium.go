@@ -9,15 +9,14 @@ import (
 )
 
 var BuzierOffset int
+var BuzierSteps int
 
 func bezierCurve(t, p0, p1, p2, p3 float64) float64 {
 	return (1-t)*(1-t)*(1-t)*p0 + 3*(1-t)*(1-t)*t*p1 + 3*(1-t)*t*t*p2 + t*t*t*p3
 }
 
 func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) error {
-	steps := 100 // Количество шагов для перемещения
-	delay := 2 * time.Millisecond
-
+	
 	// Генерация случайных контрольных точек для кривой Безье
 	cp1XOffset := rand.Intn(BuzierOffset)
 	cp1YOffset := rand.Intn(BuzierOffset)
@@ -29,8 +28,8 @@ func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) erro
 	cp2X := endX + cp2XOffset
 	cp2Y := endY + cp2YOffset
 
-	for i := 0; i <= steps; i++ {
-		t := float64(i) / float64(steps)
+	for i := 0; i <= BuzierSteps; i++ {
+		t := float64(i) / float64(BuzierSteps)
 		x := bezierCurve(t, float64(startX), float64(cp1X), float64(cp2X), float64(endX))
 		y := bezierCurve(t, float64(startY), float64(cp1Y), float64(cp2Y), float64(endY))
 
@@ -38,16 +37,13 @@ func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) erro
 			return err
 		}
 
-		time.Sleep(delay + time.Duration(rand.Intn(5))*time.Millisecond)
+		time.Sleep(time.Duration(rand.Intn(5))*time.Millisecond)
 	}
 
 	return nil
 }
 
 func TestMoveMouse(wd selenium.WebDriver, element selenium.WebElement, startX, startY, endX, endY int) error {
-	steps := 100 // Количество шагов для перемещения
-	delay := 2 * time.Millisecond
-
 	// Генерация случайных контрольных точек для кривой Безье
 	cp1XOffset := rand.Intn(BuzierOffset)
 	cp1YOffset := rand.Intn(BuzierOffset)
@@ -75,8 +71,8 @@ func TestMoveMouse(wd selenium.WebDriver, element selenium.WebElement, startX, s
 		return err
 	}
 
-	for i := 0; i <= steps; i++ {
-		t := float64(i) / float64(steps)
+	for i := 0; i <= BuzierSteps; i++ {
+		t := float64(i) / float64(BuzierSteps)
 		x := bezierCurve(t, float64(startX), float64(cp1X), float64(cp2X), float64(endX))
 		y := bezierCurve(t, float64(startY), float64(cp1Y), float64(cp2Y), float64(endY))
 
@@ -94,7 +90,7 @@ func TestMoveMouse(wd selenium.WebDriver, element selenium.WebElement, startX, s
 			return err
 		}
 
-		time.Sleep(delay + time.Duration(rand.Intn(5))*time.Millisecond)
+		time.Sleep(time.Duration(rand.Intn(5))*time.Millisecond)
 	}
 
 	return nil
@@ -201,7 +197,7 @@ func MoveMouseAndClick(element selenium.WebElement, startPosition Position) (Pos
 	return end, nil
 }
 
-func GetRandomStartMousePosition(wd selenium.WebDriver) (Position, error) {
+func GetStartMousePosition(wd selenium.WebDriver) (Position, error) {
 	window, err := wd.ExecuteScript("return [window.innerWidth, window.innerHeight];", nil)
 	if err != nil {
 		return Position{}, err
