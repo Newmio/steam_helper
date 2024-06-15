@@ -18,10 +18,10 @@ func bezierCurve(t, p0, p1, p2, p3 float64) float64 {
 func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) error {
 	
 	// Генерация случайных контрольных точек для кривой Безье
-	cp1XOffset := rand.Intn(BuzierOffset)
-	cp1YOffset := rand.Intn(BuzierOffset)
-	cp2XOffset := rand.Intn(BuzierOffset)
-	cp2YOffset := rand.Intn(BuzierOffset)
+	cp1XOffset := rand.Intn(BuzierOffset) - 100
+	cp1YOffset := rand.Intn(BuzierOffset) - 100
+	cp2XOffset := rand.Intn(BuzierOffset) - 100
+	cp2YOffset := rand.Intn(BuzierOffset) - 100
 
 	cp1X := startX + cp1XOffset
 	cp1Y := startY + cp1YOffset
@@ -45,10 +45,10 @@ func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) erro
 
 func TestMoveMouse(wd selenium.WebDriver, element selenium.WebElement, startX, startY, endX, endY int) error {
 	// Генерация случайных контрольных точек для кривой Безье
-	cp1XOffset := rand.Intn(BuzierOffset)
-	cp1YOffset := rand.Intn(BuzierOffset)
-	cp2XOffset := rand.Intn(BuzierOffset)
-	cp2YOffset := rand.Intn(BuzierOffset)
+	cp1XOffset := rand.Intn(BuzierOffset) - 100
+	cp1YOffset := rand.Intn(BuzierOffset) - 100
+	cp2XOffset := rand.Intn(BuzierOffset) - 100
+	cp2YOffset := rand.Intn(BuzierOffset) - 100
 
 	cp1X := startX + cp1XOffset
 	cp1Y := startY + cp1YOffset
