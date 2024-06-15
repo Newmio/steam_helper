@@ -17,10 +17,10 @@ func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) erro
 	delay := 2 * time.Millisecond
 
 	// Генерация случайных контрольных точек для кривой Безье
-	cp1XOffset := rand.Intn(401) - 150
-	cp1YOffset := rand.Intn(401) - 150
-	cp2XOffset := rand.Intn(401) - 150
-	cp2YOffset := rand.Intn(401) - 150
+	cp1XOffset := rand.Intn(301) - 150
+	cp1YOffset := rand.Intn(301) - 150
+	cp2XOffset := rand.Intn(301) - 150
+	cp2YOffset := rand.Intn(301) - 150
 
 	cp1X := startX + cp1XOffset
 	cp1Y := startY + cp1YOffset
@@ -140,7 +140,7 @@ func MoveMouseAndClick(element selenium.WebElement, startPosition Position) (Pos
 		return Position{}, err
 	}
 
-	if err := MoveMouse(element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil{
+	if err := MoveMouse(element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
 		return Position{}, err
 	}
 

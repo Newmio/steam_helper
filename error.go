@@ -31,6 +31,14 @@ func Trace(err error, any ...interface{}) error {
 
 			str += html
 
+		case selenium.WebElement:
+			html, err := v.GetAttribute("outerHTML")
+			if err != nil {
+				continue
+			}
+
+			str += html
+
 		default:
 			str += fmt.Sprint(v)
 		}
@@ -38,5 +46,3 @@ func Trace(err error, any ...interface{}) error {
 
 	return fmt.Errorf("%s%s%s%s(*_*) %s:%d (*_*)", err.Error(), "\n", str, "\n", file, line)
 }
-
-//
