@@ -42,7 +42,7 @@ func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) erro
 	return nil
 }
 
-func MarkerMoveMouse(wd selenium.WebDriver, startX, startY, endX, endY int) error {
+func TestMoveMouse(wd selenium.WebDriver, element selenium.WebElement, startX, startY, endX, endY int) error {
 	steps := 100 // Количество шагов для перемещения
 	delay := 2 * time.Millisecond
 
@@ -88,6 +88,10 @@ func MarkerMoveMouse(wd selenium.WebDriver, startX, startY, endX, endY int) erro
 			return err
 		}
 
+		if err := element.MoveTo(int(x), int(y)); err != nil {
+			return err
+		}
+
 		time.Sleep(delay + time.Duration(rand.Intn(5))*time.Millisecond)
 	}
 
@@ -105,6 +109,33 @@ func SleepRandom(min int, max int) {
 type Position struct {
 	X int
 	Y int
+}
+
+func TestMoveMouseAndWriteText(wd selenium.WebDriver, element selenium.WebElement, startPosition Position, text string) (Position, error) {
+	end, err := GetPositionElement(element)
+	if err != nil {
+		return Position{}, err
+	}
+
+	if err := TestMoveMouse(wd, element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
+		return Position{}, err
+	}
+
+	SleepRandom(100, 500)
+
+	if err := element.Click(); err != nil {
+		return Position{}, err
+	}
+
+	for _, value := range text {
+		if err := element.SendKeys(string(value)); err != nil {
+			return Position{}, err
+		}
+
+		SleepRandom(100, 250)
+	}
+
+	return end, nil
 }
 
 func MoveMouseAndWriteText(element selenium.WebElement, startPosition Position, text string) (Position, error) {
@@ -129,6 +160,23 @@ func MoveMouseAndWriteText(element selenium.WebElement, startPosition Position, 
 		}
 
 		SleepRandom(100, 250)
+	}
+
+	return end, nil
+}
+
+func TestMoveMouseAndClick(wd selenium.WebDriver, element selenium.WebElement, startPosition Position) (Position, error) {
+	end, err := GetPositionElement(element)
+	if err != nil {
+		return Position{}, err
+	}
+
+	if err := TestMoveMouse(wd, element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
+		return Position{}, err
+	}
+
+	if err := element.Click(); err != nil {
+		return Position{}, err
 	}
 
 	return end, nil
