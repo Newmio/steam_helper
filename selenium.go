@@ -7,7 +7,7 @@ import (
 
 	"github.com/tebeka/selenium"
 )
-//
+
 var BuzierOffset int
 var BuzierSteps int
 
@@ -16,7 +16,7 @@ func bezierCurve(t, p0, p1, p2, p3 float64) float64 {
 }
 
 func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) error {
-	
+
 	// Генерация случайных контрольных точек для кривой Безье
 	cp1XOffset := rand.Intn(BuzierOffset) - 100
 	cp1YOffset := rand.Intn(BuzierOffset) - 100
@@ -37,7 +37,7 @@ func MoveMouse(element selenium.WebElement, startX, startY, endX, endY int) erro
 			return err
 		}
 
-		time.Sleep(time.Duration(rand.Intn(5))*time.Millisecond)
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Millisecond)
 	}
 
 	return nil
@@ -90,7 +90,7 @@ func TestMoveMouse(wd selenium.WebDriver, element selenium.WebElement, startX, s
 			return err
 		}
 
-		time.Sleep(time.Duration(rand.Intn(5))*time.Millisecond)
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Millisecond)
 	}
 
 	return nil
@@ -251,14 +251,8 @@ func GetPositionElement(element selenium.WebElement) (Position, error) {
 // 	return httpCookies
 // }
 
-func GetRandomWindowSize(userAgent string) ScreenSize {
-	for _, value := range pcUserAgents {
-		if value == userAgent {
-			return computerScreenSizes[rand.Intn(len(computerScreenSizes))]
-		}
-	}
-
-	return mobileAndTabletScreenSizes[rand.Intn(len(mobileAndTabletScreenSizes))]
+func GetRandomWindowSize() ScreenSize {
+	return computerScreenSizes[rand.Intn(len(computerScreenSizes))]
 }
 
 type ScreenSize struct {
@@ -274,11 +268,4 @@ var computerScreenSizes = []ScreenSize{
 	{3200, 1800}, {2736, 1824}, {3000, 2000}, {3840, 1600},
 	{4096, 2160}, {1080, 1920}, {1440, 2560}, {2160, 3840},
 	{2400, 1350}, {3072, 1920}, {1600, 2560}, {1200, 1920},
-}
-
-var mobileAndTabletScreenSizes = []ScreenSize{
-	{320, 480}, {360, 640}, {375, 667}, {375, 812},
-	{414, 896}, {768, 1024}, {800, 1280}, {1024, 1366},
-	{600, 1024}, {800, 1280}, {720, 1280}, {1080, 1920},
-	{1440, 2560}, {2160, 3840}, {480, 800}, {540, 960},
 }
