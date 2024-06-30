@@ -169,25 +169,17 @@ func TestMoveMouseAndClick(wd selenium.WebDriver, element selenium.WebElement, s
 		return Position{}, err
 	}
 
-	fmt.Println("---------- 1 ----------")
-
 	if err := scrollToElement(element, end); err != nil {
 		return Position{}, err
 	}
-
-	fmt.Println("---------- 2 ----------")
 
 	if err := TestMoveMouse(wd, element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
 		return Position{}, err
 	}
 
-	fmt.Println("---------- 3 ----------")
-
 	if err := element.Click(); err != nil {
 		return Position{}, err
 	}
-
-	fmt.Println("---------- 4 ----------")
 
 	return end, nil
 }
@@ -210,40 +202,46 @@ func MoveMouseAndClick(element selenium.WebElement, startPosition Position) (Pos
 }
 
 func scrollToElement(element selenium.WebElement, position Position)error {
+	window := activeScreenSize
 	for{
-		switch elementInWindow(position){
+		switch elementInWindow(position, window){
 
 		case "right":
 			if err := element.SendKeys(selenium.RightArrowKey); err != nil {
 				return err
 			}
 
+			window.Width += 10
+
 		case "down":
 			if err := element.SendKeys(selenium.DownArrowKey); err != nil {
 				return err
 			}
 
+			window.Height += 10
+
 		case "stop":
 			return nil
 
 		default:
-			SleepRandom(1, 5)
 			continue
 		}
+
+		SleepRandom(1, 5)
 	}
 }
 
-func elementInWindow(p Position)string {
+func elementInWindow(p Position, windowSize ScreenSize)string {
 
-	if activeScreenSize.Width >= p.X && p.X >= 0 && activeScreenSize.Height >= p.Y && p.Y >= 0{
+	if windowSize.Width >= p.X && p.X >= 0 && windowSize.Height >= p.Y && p.Y >= 0{
 		return "stop"
 	}
 
-	if activeScreenSize.Width < p.X && p.X >= 0 {
+	if windowSize.Width < p.X && p.X >= 0 {
 		return "right"
 	}
 
-	if activeScreenSize.Height < p.Y && p.Y >= 0 {
+	if windowSize.Height < p.Y && p.Y >= 0 {
 		return "down"
 	}
 
