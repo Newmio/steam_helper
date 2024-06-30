@@ -169,17 +169,25 @@ func TestMoveMouseAndClick(wd selenium.WebDriver, element selenium.WebElement, s
 		return Position{}, err
 	}
 
+	fmt.Println("---------- 1 ----------")
+
 	if err := scrollToElement(element, end); err != nil {
 		return Position{}, err
 	}
+
+	fmt.Println("---------- 2 ----------")
 
 	if err := TestMoveMouse(wd, element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
 		return Position{}, err
 	}
 
+	fmt.Println("---------- 3 ----------")
+
 	if err := element.Click(); err != nil {
 		return Position{}, err
 	}
+
+	fmt.Println("---------- 4 ----------")
 
 	return end, nil
 }
