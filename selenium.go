@@ -207,6 +207,7 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 		switch elementInWindow(position, window){
 
 		case "right":
+			fmt.Println("----------- 1 -----------")
 			if err := element.SendKeys(selenium.RightArrowKey); err != nil {
 				return err
 			}
@@ -214,6 +215,7 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 			window.Width += 10
 
 		case "down":
+			fmt.Println("----------- 2 -----------")
 			if err := element.SendKeys(selenium.DownArrowKey); err != nil {
 				return err
 			}
@@ -221,8 +223,12 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 			window.Height += 10
 
 		case "stop":
+			fmt.Println("----------- 3 -----------")
 			return nil
 		}
+
+		fmt.Println("----------- 4 -----------")
+		fmt.Println(window)
 
 		SleepRandom(20, 50)
 	}
@@ -230,7 +236,7 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 
 func elementInWindow(p Position, windowSize ScreenSize)string {
 
-	if (windowSize.Width >= p.X && p.X >= 0) || (windowSize.Height >= p.Y && p.Y >= 0){
+	if (windowSize.Width >= p.X && p.X >= 0) && (windowSize.Height >= p.Y && p.Y >= 0){
 		return "stop"
 	}
 
