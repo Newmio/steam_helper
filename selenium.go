@@ -215,17 +215,21 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 				return err
 			}
 
-		default:
+		case "stop":
 			return nil
+
+		default:
+			SleepRandom(1, 5)
+			continue
 		}
 	}
 }
 
 func elementInWindow(p Position)string {
 
-	// if activeScreenSize.Width >= p.X && p.X >= 0 && activeScreenSize.Height >= p.Y && p.Y >= 0{
-	// 	return ""
-	// }
+	if activeScreenSize.Width >= p.X && p.X >= 0 && activeScreenSize.Height >= p.Y && p.Y >= 0{
+		return "stop"
+	}
 
 	if activeScreenSize.Width < p.X && p.X >= 0 {
 		return "right"
