@@ -109,7 +109,12 @@ type Position struct {
 	Y int
 }
 
-func TestMoveMouseAndWriteText(wd selenium.WebDriver, element selenium.WebElement, startPosition Position, text string) (Position, error) {
+func TestMoveMouseAndWriteText(wd selenium.WebDriver, cssSelector string, startPosition Position, text string) (Position, error) {
+	element, err := wd.FindElement(selenium.ByCSSSelector, cssSelector)
+	if err != nil {
+		return Position{}, err
+	}
+
 	end, err := GetPositionElement(element)
 	if err != nil {
 		return Position{}, err
@@ -136,7 +141,12 @@ func TestMoveMouseAndWriteText(wd selenium.WebDriver, element selenium.WebElemen
 	return end, nil
 }
 
-func MoveMouseAndWriteText(element selenium.WebElement, startPosition Position, text string) (Position, error) {
+func MoveMouseAndWriteText(wd selenium.WebDriver, cssSelector string, startPosition Position, text string) (Position, error) {
+	element, err := wd.FindElement(selenium.ByCSSSelector, cssSelector)
+	if err != nil {
+		return Position{}, err
+	}
+
 	end, err := GetPositionElement(element)
 	if err != nil {
 		return Position{}, err
@@ -163,13 +173,23 @@ func MoveMouseAndWriteText(element selenium.WebElement, startPosition Position, 
 	return end, nil
 }
 
-func TestMoveMouseAndClick(wd selenium.WebDriver, element selenium.WebElement, startPosition Position) (Position, error) {
+func TestMoveMouseAndClick(wd selenium.WebDriver, cssSelector string, startPosition Position) (Position, error) {
+	element, err := wd.FindElement(selenium.ByCSSSelector, cssSelector)
+	if err != nil {
+		return Position{}, err
+	}
+
 	end, err := GetPositionElement(element)
 	if err != nil {
 		return Position{}, err
 	}
 
-	if err := scrollToElement(element, end); err != nil {
+	body, err := wd.FindElement(selenium.ByTagName, "body")
+	if err != nil {
+		return Position{}, err
+	}
+
+	if err := scrollToElement(body, end); err != nil {
 		return Position{}, err
 	}
 
@@ -184,7 +204,12 @@ func TestMoveMouseAndClick(wd selenium.WebDriver, element selenium.WebElement, s
 	return end, nil
 }
 
-func MoveMouseAndClick(element selenium.WebElement, startPosition Position) (Position, error) {
+func MoveMouseAndClick(wd selenium.WebDriver, cssSelector string, startPosition Position) (Position, error) {
+	element, err := wd.FindElement(selenium.ByCSSSelector, cssSelector)
+	if err != nil {
+		return Position{}, err
+	}
+
 	end, err := GetPositionElement(element)
 	if err != nil {
 		return Position{}, err
