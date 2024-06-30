@@ -227,7 +227,7 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 			continue
 		}
 
-		SleepRandom(1, 5)
+		SleepRandom(100, 300)
 	}
 }
 
