@@ -222,18 +222,15 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 
 		case "stop":
 			return nil
-
-		default:
-			continue
 		}
 
-		SleepRandom(100, 300)
+		SleepRandom(20, 50)
 	}
 }
 
 func elementInWindow(p Position, windowSize ScreenSize)string {
 
-	if windowSize.Width >= p.X && p.X >= 0 && windowSize.Height >= p.Y && p.Y >= 0{
+	if (windowSize.Width >= p.X && p.X >= 0) || (windowSize.Height >= p.Y && p.Y >= 0){
 		return "stop"
 	}
 
