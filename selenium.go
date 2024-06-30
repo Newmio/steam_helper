@@ -169,6 +169,10 @@ func TestMoveMouseAndClick(wd selenium.WebDriver, element selenium.WebElement, s
 		return Position{}, err
 	}
 
+	if err := scrollToElement(element, end); err != nil {
+		return Position{}, err
+	}
+
 	if err := TestMoveMouse(wd, element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
 		return Position{}, err
 	}
@@ -195,6 +199,43 @@ func MoveMouseAndClick(element selenium.WebElement, startPosition Position) (Pos
 	}
 
 	return end, nil
+}
+
+func scrollToElement(element selenium.WebElement, position Position)error {
+	for{
+		switch elementInWindow(position){
+
+		case "right":
+			if err := element.SendKeys(selenium.RightArrowKey); err != nil {
+				return err
+			}
+
+		case "down":
+			if err := element.SendKeys(selenium.DownArrowKey); err != nil {
+				return err
+			}
+
+		default:
+			return nil
+		}
+	}
+}
+
+func elementInWindow(p Position)string {
+
+	// if activeScreenSize.Width >= p.X && p.X >= 0 && activeScreenSize.Height >= p.Y && p.Y >= 0{
+	// 	return ""
+	// }
+
+	if activeScreenSize.Width < p.X && p.X >= 0 {
+		return "right"
+	}
+
+	if activeScreenSize.Height < p.Y && p.Y >= 0 {
+		return "down"
+	}
+
+	return ""
 }
 
 func GetStartMousePosition(wd selenium.WebDriver) (Position, error) {
@@ -252,7 +293,8 @@ func GetPositionElement(element selenium.WebElement) (Position, error) {
 // }
 
 func GetRandomWindowSize() ScreenSize {
-	return computerScreenSizes[rand.Intn(len(computerScreenSizes))]
+	activeScreenSize = screenSizes[rand.Intn(len(screenSizes))]
+	return activeScreenSize
 }
 
 type ScreenSize struct {
@@ -260,12 +302,27 @@ type ScreenSize struct {
 	Height int
 }
 
-var computerScreenSizes = []ScreenSize{
-	{1920, 1080}, {1366, 768}, {1440, 900}, {1536, 864},
-	{1600, 900}, {1680, 1050}, {2560, 1440}, {3840, 2160},
-	{1280, 1024}, {1600, 1200}, {1920, 1200}, {2560, 1600},
-	{3440, 1440}, {5120, 2880}, {2048, 1080}, {2880, 1800},
-	{3200, 1800}, {2736, 1824}, {3000, 2000}, {3840, 1600},
-	{4096, 2160}, {1080, 1920}, {1440, 2560}, {2160, 3840},
-	{2400, 1350}, {3072, 1920}, {1600, 2560}, {1200, 1920},
+var activeScreenSize ScreenSize
+
+var screenSizes = []ScreenSize{
+    //{Width: 640, Height: 480},     // VGA
+    //{Width: 800, Height: 600},     // SVGA
+    //{Width: 1024, Height: 768},    // XGA
+    {Width: 1280, Height: 720},    // HD
+    {Width: 1280, Height: 800},    // WXGA
+    {Width: 1280, Height: 1024},   // SXGA
+    {Width: 1366, Height: 768},    // WXGA
+    {Width: 1440, Height: 900},    // WXGA+
+    {Width: 1600, Height: 900},    // HD+
+    {Width: 1680, Height: 1050},   // WSXGA+
+    {Width: 1920, Height: 1080},   // Full HD
+    {Width: 1920, Height: 1200},   // WUXGA
+    {Width: 2048, Height: 1080},   // 2K
+    {Width: 2560, Height: 1440},   // QHD
+    {Width: 2560, Height: 1600},   // WQXGA
+    //{Width: 2880, Height: 1800},   // Retina MacBook Pro
+    {Width: 3200, Height: 1800},   // QHD+
+    {Width: 3840, Height: 2160},   // 4K UHD
+    {Width: 4096, Height: 2160},   // DCI 4K
+    {Width: 5120, Height: 2880},   // 5K
 }
