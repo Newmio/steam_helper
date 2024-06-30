@@ -212,7 +212,7 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 				return err
 			}
 
-			window.Width += 10
+			window.Width += 200
 
 		case "down":
 			fmt.Println("----------- 2 -----------")
@@ -220,7 +220,7 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 				return err
 			}
 
-			window.Height += 10
+			window.Height += 200
 
 		case "stop":
 			fmt.Println("----------- 3 -----------")
@@ -230,7 +230,7 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 		fmt.Println("----------- 4 -----------")
 		fmt.Println(window)
 
-		SleepRandom(20, 50)
+		SleepRandom(100, 200)
 	}
 }
 
