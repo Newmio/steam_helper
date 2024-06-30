@@ -115,6 +115,15 @@ func TestMoveMouseAndWriteText(wd selenium.WebDriver, element selenium.WebElemen
 		return Position{}, err
 	}
 
+	body, err := wd.FindElement(selenium.ByTagName, "body")
+	if err != nil {
+		return Position{}, err
+	}
+
+	if err := scrollToElement(body, end); err != nil {
+		return Position{}, err
+	}
+
 	if err := TestMoveMouse(wd, element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
 		return Position{}, err
 	}
@@ -139,6 +148,15 @@ func TestMoveMouseAndWriteText(wd selenium.WebDriver, element selenium.WebElemen
 func MoveMouseAndWriteText(wd selenium.WebDriver, element selenium.WebElement, startPosition Position, text string) (Position, error) {
 	end, err := GetPositionElement(element)
 	if err != nil {
+		return Position{}, err
+	}
+
+	body, err := wd.FindElement(selenium.ByTagName, "body")
+	if err != nil {
+		return Position{}, err
+	}
+
+	if err := scrollToElement(body, end); err != nil {
 		return Position{}, err
 	}
 
@@ -195,6 +213,15 @@ func MoveMouseAndClick(wd selenium.WebDriver, element selenium.WebElement, start
 		return Position{}, err
 	}
 
+	body, err := wd.FindElement(selenium.ByTagName, "body")
+	if err != nil {
+		return Position{}, err
+	}
+
+	if err := scrollToElement(body, end); err != nil {
+		return Position{}, err
+	}
+
 	if err := MoveMouse(element, startPosition.X, startPosition.Y, end.X, end.Y); err != nil {
 		return Position{}, err
 	}
@@ -212,7 +239,6 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 		switch elementInWindow(position, window){
 
 		case "right":
-			fmt.Println("----------- 1 -----------")
 			if err := element.SendKeys(selenium.RightArrowKey); err != nil {
 				return err
 			}
@@ -220,7 +246,6 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 			window.Width += 20
 
 		case "down":
-			fmt.Println("----------- 2 -----------")
 			if err := element.SendKeys(selenium.DownArrowKey); err != nil {
 				return err
 			}
@@ -228,14 +253,10 @@ func scrollToElement(element selenium.WebElement, position Position)error {
 			window.Height += 20
 
 		case "stop":
-			fmt.Println("----------- 3 -----------")
 			return nil
 		}
 
-		fmt.Println("----------- 4 -----------")
-		fmt.Println(window)
-
-		SleepRandom(3, 10)
+		SleepRandom(3, 7)
 	}
 }
 
