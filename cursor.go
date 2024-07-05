@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 )
 
+
 func MapToStruct(m map[string]interface{}, s interface{})error{
 	data, err := json.Marshal(m)
 	if err != nil{
