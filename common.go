@@ -2,6 +2,7 @@ package steam_helper
 
 import "time"
 
+//
 var exchangeRate = map[string]float64{
 	"USD ($)":    1,  // USD (доллар США)
 	"GBP (£)":    2,  // GBP (фунт стерлингов)
