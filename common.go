@@ -61,4 +61,6 @@ func TimeFormat(t time.Time) string {
 	return t.Format("2006-01-02 15:04:05")
 }
 
-var ERROR_NO_SUCH_ELEMENT_IN_FRAME = "stale element reference: stale element reference: stale element not found in the current frame"
+const(
+	ERROR_NO_SUCH_ELEMENT_IN_FRAME = "stale element reference: stale element reference: stale element not found in the current frame"
+)
