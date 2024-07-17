@@ -303,8 +303,8 @@ func GetPositionElement(element selenium.WebElement) (Position, error) {
 	}
 
 	return Position{
-		X: location.X + rand.Intn(int(size.Width)),
-		Y: location.Y + rand.Intn(int(size.Height)),
+		X: location.X + rand.Intn(size.Width),
+		Y: location.Y + rand.Intn(size.Height),
 	}, nil
 }
 
