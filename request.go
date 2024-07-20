@@ -56,6 +56,7 @@ type customResponse struct {
 
 func NewHttp(client *http.Client, proxy []ProxyConfig) ICustomHTTP {
 	var c customHTTP
+	c.proxyUrl = make(map[string]*url.URL)
 	c.client = client
 	c.mu = &sync.Mutex{}
 
