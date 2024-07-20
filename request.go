@@ -101,6 +101,7 @@ func (c *customHTTP) Do(param Param) (customResponse, error) {
 
 func (c *customHTTP) do(param Param, autoClient, noProxy bool) (customResponse, error) {
 	var resp customResponse
+	resp.Headers = make(map[string]string)
 	var client *http.Client
 
 	if autoClient {
